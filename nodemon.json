@@ -1,0 +1,10 @@
+{
+    "env": {
+    "MYSQLUSER": "root",
+    "MYSQLPASSWORD": "Leslmj1999@",
+    "MYSQLDATABASE": "bambuca",
+    "MYSQLHOST": "127.0.0.1",
+    "MYSQLPORT": 3307,
+    "URL_API": "http://localhost:3000/"
+    }
+}
