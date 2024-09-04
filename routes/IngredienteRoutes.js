@@ -1,8 +1,20 @@
 const express = require('express');
-const router = express.Router();
-
 const IngredienteController = require('../controllers/IngredienteController');
 
-router.get('/', IngredienteController.getIngredientes);
 
-module.exports = router;//Informa que ao chamar esse arquivo o módulo é exportado
+class IngredienteRoutes{
+    constructor(){
+        this.ingredienteController = new IngredienteController();
+        this.router = express.Router();
+        this.get();
+    }
+
+    get(){
+    
+        this.router.get('/', this.ingredienteController.show.bind(this.ingredienteController));
+        
+    }
+
+}
+
+module.exports = new IngredienteRoutes().router
