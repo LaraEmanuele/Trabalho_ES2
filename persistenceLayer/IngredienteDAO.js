@@ -6,6 +6,8 @@ class IngredienteDAO{
         this.recovery=this.recovery.bind(this);
         this.edit=this.edit.bind(this);
         this.recoveryOne=this.recoveryOne.bind(this);
+        this.update=this.update.bind(this);
+        this.delete=this.delete.bind(this);
     }
 
     async recovery (){
@@ -20,12 +22,13 @@ class IngredienteDAO{
 
     async edit (req){
         try{
-            const query = 'INSERT INTO ingrediente (nome) VALUES (?);';
+            const query = 'INSERT INTO ingrediente (nome) VALUES ?;';
             const ingrediente = this.mysql.execute(query,
                 [
                     req.body.nome
                 ]
             );
+            console.log(ingrediente);
             return ingrediente
         }catch{
             throw error;
@@ -35,8 +38,23 @@ class IngredienteDAO{
     async recoveryOne (req){
         try{
             const query = 'SELECT * FROM ingrediente WHERE id_ingrediente = ?;';
-            const ingrediente = this.mysql.execute(query,
+            const ingrediente = await this.mysql.execute(query,
                 [
+                    req.params.id_ingrediente
+                ]
+            );
+            return ingrediente;
+        }catch{
+            throw error;
+        }
+    }
+
+    async update (req){
+        try{
+            const query = 'UPDATE ingrediente SET nome = ? WHERE id_ingrediente = ?;';
+            const ingrediente = await this.mysql.execute(query,
+                [
+                    req.body.nome,
                     req.params.id_ingrediente
                 ]
             );
@@ -46,16 +64,10 @@ class IngredienteDAO{
         }
     }
 
-    async recoveryOne (req){
+    async delete (req){
         try{
-            const query = 'UPDATE ingrediente SET nome = (?) WHERE id_ingrediente = (?);';
-            const ingrediente = this.mysql.execute(query,
-                [
-                    req.body.nome,
-                    req.body.id_ingrediente
-                ]
-            );
-            return ingrediente
+            const query = 'DELETE FROM ingrediente WHERE id_ingrediente = ?;';
+            await this.mysql.execute(query,[req.body.id_ingrediente]);
         }catch{
             throw error;
         }

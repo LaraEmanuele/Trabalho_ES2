@@ -7,6 +7,7 @@ class IngredienteController{
         this.write=this.write.bind(this);
         this.showOne=this.showOne.bind(this);
         this.update=this.update.bind(this);
+        this.delete=this.delete.bind(this);
     }
 
     async showAll (req, res){
@@ -55,8 +56,7 @@ class IngredienteController{
         }
     }
 
-    async showOne(req, res){
-        
+    async showOne(req, res){   
         try{
             const result = await this.ingredienteDAO.recoveryOne(req);
             if (result.length == 0){
@@ -67,8 +67,8 @@ class IngredienteController{
             const response = {
             mensagem: 'Ingrediente encontrado',
             ingredienteEncontrado: {
-                id_ingrediente: result.id_ingrediente,
-                nome: result.nome,
+                id_ingrediente: result[0].id_ingrediente,
+                nome: result[0].nome,
                     request:{
                         tipo: 'GET',
                         descricao:'Retorna todos os ingredientes',
@@ -76,7 +76,7 @@ class IngredienteController{
                     }
                 }
             }
-            return res.status(201).send(result);
+            return res.status(201).send(response);
         }catch(error){
             return res.status(500).send({error:"Entrou no showOne no IngredienteController"});
         }
@@ -85,16 +85,37 @@ class IngredienteController{
     async update (req, res){
         try{
             const result = await this.ingredienteDAO.update(req);
-            
             const response = {
-                mensagem: 'Ingrediente inserido com sucesso',
+                mensagem: 'Ingrediente atualizado com sucesso',
                 produtoCriado: {
-                    id_ingrediente: req.body.id_ingrediente,
-                    nome: result.body.nome,
+                    id_ingrediente: req.params.id_ingrediente,
+                    nome: req.body.nome,
                     request:{
                         tipo: 'GET',
                         descricao:'Retorna todos os ingredientes',
                         url: process.env.URL_API + 'ingrediente/'
+                    }
+                }
+            }
+            return res.status(201).send(response);
+        }catch(error){
+            return res.status(500).send({error:"Entrou no update no IngredienteController"});
+        }
+    }
+
+    async delete (req, res){
+        try{
+            await this.ingredienteDAO.delete(req);
+            const response = {
+                mensagem: 'Ingrediente deletado com sucesso',
+                produtoRemovido: {
+                    request:{
+                        tipo: 'POST',
+                        descricao:'Insere um ingrediente',
+                        url: process.env.URL_API + 'ingrediente/',
+                        body:{
+                            nome:'String'
+                        }
                     }
                 }
             }
